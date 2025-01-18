@@ -1,12 +1,87 @@
-**Editing SSH Configuration**
+## **Logs and Analysis Commands : secure-20240804.txt**
+
+### **Extract Failed Password Attempts**
+```bash
+[madhu@localhost logs]$ grep "Failed password" secure-20240804 > failed_attempts_1.txt
+[madhu@localhost logs]$ grep "Failed password" secure-20240804 | awk '{print $9}' | sort | uniq -c > usernames_1.txt
+[madhu@localhost logs]$ grep "Failed password" secure-20240804 | awk '{print $11}' | sort | uniq -c > ip_addresses_1.txt
+```
+
+### **Top Usernames and IP Addresses**
+```bash
+[madhu@localhost logs]$ cat usernames_1.txt | sort -nr | head
+  23224 root
+    447 invalid
+      7 mysql
+      2 sshd
+      1 operator
+      1 adm
+[madhu@localhost logs]$ cat ip_addresses_1.txt | sort -nr | head
+  15579 221.122.88.121
+   5126 219.159.100.72
+    958 223.82.216.42
+    416 167.172.79.30
+    111 183.81.169.238
+     75 admin
+     45 80.94.95.81
+     42 ubuntu
+     25 190.104.25.210
+     25 103.7.226.128
+```
+
+## **Logs and Analysis Commands : secure.txt**
+
+### **Extract Failed Password Attempts**
+```bash
+[madhu@localhost logs]$ grep "Failed password" secure > failed_attempts_2.txt
+[madhu@localhost logs]$ grep "Failed password" secure | awk '{print $9}' | sort | uniq -c > usernames_2.txt
+[madhu@localhost logs]$ grep "Failed password" secure | awk '{print $11}' | sort | uniq -c > ip_addresses_2.txt
+```
+
+### **Top Usernames and IP Addresses**
+```bash
+[madhu@localhost logs]$ cat usernames_2.txt | sort -nr | head
+   2807 invalid
+   2690 root
+     19 www
+     15 ftp
+     10 mysql
+      8 sshd
+      7 operator
+      6 mail
+      6 apache
+      5 bin
+[madhu@localhost logs]$ cat ip_addresses_2.txt | sort -nr | head
+    868 101.126.66.68
+    230 183.81.169.238
+    175 185.234.216.97
+    167 admin
+    105 143.110.246.247
+    100 83.222.191.62
+     88 170.64.139.190
+     85 101.126.4.215
+     52 user
+     46 218.92.0.59
+```
+
+### **Filter valid users**
+```bash
+[madhu@localhost logs]$ echo -e "user1\nuser2\nroot\nadmin" > valid_users.txt
+[madhu@localhost logs]$ grep -f valid_users.txt failed_attempts_1.txt > valid_users_attacked1.txt
+[madhu@localhost logs]$ grep -f valid_users.txt failed_attempts_2.txt > valid_users_attacked2.txt
+```
+
+## **Security Enhancements**
+
+### **Editing SSH Configuration**
 ```
 [madhu@localhost logs]$ sudo vi /etc/ssh/sshd_config
 ```
 
-**Installing EPEL Release**
+### **Installing EPEL Release**
 ```
 madhu@localhost logs]$ sudo yum install epel-release -y
-
+```
 Last metadata expiration check: 0:23:11 ago on Sat 18 Jan 2025 10:56:30 AM IST.
 
 Running transaction
@@ -25,12 +100,12 @@ Installed:
   epel-next-release-9-7.el9.noarch          epel-release-9-7.el9.noarch        
 
 Complete!
-```
 
-**Installing Fail2Ban**
+
+### **Installing Fail2Ban**
 ```
 [madhu@localhost logs]$ sudo yum install fail2ban -y
-
+```
 Running transaction
   Preparing        :                                                        1/1
   Installing       : libesmtp-1.0.6-24.el9.x86_64                           1/8
@@ -65,23 +140,24 @@ Installed:
   libesmtp-1.0.6-24.el9.x86_64            liblockfile-1.14-10.el9.x86_64      
 
 Complete!
-```
 
-**Enabling and Starting Fail2Ban Service**
+
+### **Enabling and Starting Fail2Ban Service**
 ```
 [madhu@localhost logs]$ sudo systemctl enable fail2ban
 Created symlink /etc/systemd/system/multi-user.target.wants/fail2ban.service → /usr/lib/systemd/system/fail2ban.service.
 [madhu@localhost logs]$ sudo systemctl start fail2ban
 ```
 
-**Editing Password Quality Configuration**
+### **Editing Password Quality Configuration**
 ```
 password: sudo vi /etc/security/pwquality
 ```
 
-**Installing Google Authenticator**
+### **Installing Google Authenticator**
 ```
 [madhu@localhost logs]$ sudo yum install google-authenticator -y
+```
 [sudo] password for madhu:
 Last metadata expiration check: 0:12:37 ago on Sat 18 Jan 2025 11:21:31 AM IST.
 
@@ -96,8 +172,8 @@ Installed:
 
 Complete!
 
-**Aunthenticator Setup**
-  
+### **Aunthenticator Setup**
+``` 
 [madhu@localhost logs]$ google-authenticator
 
 Do you want authentication tokens to be time-based (y/n) y
@@ -136,6 +212,19 @@ If the computer that you are logging into isn't hardened against brute-force
 login attempts, you can enable rate-limiting for the authentication module.
 By default, this limits attackers to no more than 3 login attempts every 30s.
 Do you want to enable rate-limiting? (y/n) y
+```
 
-**Nagios Installation**
+## **Continuous Monitoring and Reporting**
+
+### **Nagios Installation**
+```
 [madhu@localhost logs]$ sudo yum  install nagios -y
+```
+
+### **Nagios Configuration Validation and Alert Setup**
+```
+[madhu@localhost logs]$ ls /etc/nagios/nagios.cfg
+etc/nagios/nagios.cfg
+[madhu@localhost logs]$ sudo nagios -v /etc/nagios/nagios.cfg
+[sudo] password for madhu:
+```
