@@ -15,6 +15,7 @@ Brute force attacks are common cybersecurity threats where an attacker attempts 
 - **`commands.md`**: A detailed list of commands used in the analysis and mitigation process.
 - **`secure-logs_1733594589588.zip`**: A compressed file containing the server logs.
 - **`Screenshots/`**: Folder containing screenshots of the project in action.
+- **`logs/`**: folder containing analysed logs
 
 ---
 
