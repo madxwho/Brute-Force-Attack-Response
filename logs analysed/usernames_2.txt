@@ -1,0 +1,15 @@
+      1 adm
+      6 apache
+      5 bin
+      2 daemon
+     15 ftp
+      2 games
+   2807 invalid
+      2 lp
+      6 mail
+     10 mysql
+      2 nobody
+      7 operator
+   2690 root
+      8 sshd
+     19 www
